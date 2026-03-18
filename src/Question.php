@@ -22,7 +22,7 @@ final class Question
      */
     private static ?StreamableInputInterface $streamableInput;
 
-    public function __construct(private readonly ?SymfonyQuestionHelper $helper = new QuestionHelper)
+    public function __construct(private readonly ?SymfonyQuestionHelper $helper = new QuestionHelper())
     {
     }
 
@@ -31,7 +31,7 @@ final class Question
      */
     public static function setStreamableInput(?StreamableInputInterface $streamableInput): void
     {
-        self::$streamableInput = $streamableInput ?? new ArgvInput;
+        self::$streamableInput = $streamableInput ?? new ArgvInput();
     }
 
     /**
@@ -39,7 +39,7 @@ final class Question
      */
     public static function getStreamableInput(): StreamableInputInterface
     {
-        return self::$streamableInput ??= new ArgvInput;
+        return self::$streamableInput ??= new ArgvInput();
     }
 
     /**
@@ -49,7 +49,7 @@ final class Question
      */
     public function ask(string $question, ?iterable $autocomplete = null): mixed
     {
-        $html = (new HtmlRenderer)->parse($question)->toString();
+        $html = (new HtmlRenderer())->parse($question)->toString();
 
         $question = new SymfonyQuestion($html);
 
@@ -65,9 +65,9 @@ final class Question
 
             $currentHelper = $property->isInitialized($output)
                 ? $property->getValue($output)
-                : new SymfonyQuestionHelper;
+                : new SymfonyQuestionHelper();
 
-            $property->setValue($output, new QuestionHelper);
+            $property->setValue($output, new QuestionHelper());
 
             try {
                 return $output->askQuestion($question);

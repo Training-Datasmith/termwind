@@ -38,7 +38,7 @@ if (! function_exists('Termwind\render')) {
      */
     function render(string $html, int $options = OutputInterface::OUTPUT_NORMAL): void
     {
-        (new HtmlRenderer)->render($html, $options);
+        (new HtmlRenderer())->render($html, $options);
     }
 }
 
@@ -48,7 +48,7 @@ if (! function_exists('Termwind\parse')) {
      */
     function parse(string $html): string
     {
-        return (new HtmlRenderer)->parse($html)->toString();
+        return (new HtmlRenderer())->parse($html)->toString();
     }
 }
 
@@ -58,7 +58,7 @@ if (! function_exists(\Termwind\terminal::class)) {
      */
     function terminal(): Terminal
     {
-        return new Terminal;
+        return new Terminal();
     }
 }
 
@@ -70,6 +70,6 @@ if (! function_exists('Termwind\ask')) {
      */
     function ask(string $question, ?iterable $autocomplete = null): mixed
     {
-        return (new Question)->ask($question, $autocomplete);
+        return (new Question())->ask($question, $autocomplete);
     }
 }

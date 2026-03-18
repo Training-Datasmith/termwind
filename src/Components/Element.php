@@ -70,7 +70,7 @@ abstract class Element implements \Stringable
     public function toString(): string
     {
         if (is_array($this->content)) {
-            $inheritance = new InheritStyles;
+            $inheritance = new InheritStyles();
             $this->content = implode('', $inheritance($this->content, $this->styles));
         }
 

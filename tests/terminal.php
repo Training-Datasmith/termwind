@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use function Termwind\terminal;
 
 it('can get the width of the terminal', function () {

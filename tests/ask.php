@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 use Symfony\Component\Console\Formatter\NullOutputFormatter;
 use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Terminal;
-use Termwind\Question;
 
 use function Termwind\ask;
+
+use Termwind\Question;
+
 use function Termwind\renderUsing;
 
 it('receives the answer given from the user', function () {
@@ -52,7 +56,7 @@ it('renders the question with autocomplete', function () {
     $output->shouldReceive('write')->once()->with($clearLineCode);
     $output->shouldReceive('write')->once()->with('<hl>ne</hl>');
     $output->shouldReceive('write')->once()->with($restorePositionCode);
-    $output->shouldReceive('getFormatter')->once()->andReturn(new NullOutputFormatter);
+    $output->shouldReceive('getFormatter')->once()->andReturn(new NullOutputFormatter());
 
     ask('<span class="bg-red ml-1">Question</span>', ['one', 'two', 'three']);
 })->skip(! Terminal::hasSttyAvailable(), '`stty` is required to test autocomplete functionality');

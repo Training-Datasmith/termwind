@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use function Termwind\parse;
 
 it('renders the element', function () {
@@ -14,7 +16,8 @@ it('renders the element', function () {
 
     $html = parse("<pre>$content</pre>");
 
-    expect($html)->toBe('
+    expect($html)->toBe(
+        '
     <h1>Introduction</h1>'.str_repeat(' ', 19).'
 '.str_repeat(' ', 44).'
     <div>The body of your message.</div>'.str_repeat(' ', 4).'

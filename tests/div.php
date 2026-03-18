@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use function Termwind\parse;
 
 it('renders the element', function () {
@@ -9,7 +11,8 @@ it('renders the element', function () {
 });
 
 it('renders the element with display block as default', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <div>
             <div>First line</div>
             <div>Second Line</div>
@@ -21,7 +24,8 @@ it('renders the element with display block as default', function () {
 });
 
 it('renders the element with display block [one empty]', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <div>
             <div></div>
             <div>Second Line</div>

@@ -50,7 +50,8 @@ final class Styles
         private array $textModifiers = [],
         private array $styleModifiers = [],
         private readonly array $defaultStyles = []
-    ) {}
+    ) {
+    }
 
     /**
      * @return $this
@@ -762,7 +763,8 @@ final class Styles
 
         if ($options !== []) {
             $options = array_keys(array_filter(
-                $options, fn ($option): bool => $option === true
+                $options,
+                fn ($option): bool => $option === true
             ));
             $styles[] = count($options) > 0
                 ? 'options='.implode(',', $options)
@@ -883,13 +885,16 @@ final class Styles
         [$marginTop, $marginRight, $marginBottom, $marginLeft] = $this->getMargins();
         [$paddingTop, $paddingRight, $paddingBottom, $paddingLeft] = $this->getPaddings();
 
-        $content = (string) preg_replace('/\r[ \t]?/', "\n",
+        $content = (string) preg_replace(
+            '/\r[ \t]?/',
+            "\n",
             (string) preg_replace(
                 '/\n/',
                 str_repeat(' ', $marginRight + $paddingRight)
                 ."\n".
                 str_repeat(' ', $marginLeft + $paddingLeft),
-                $content)
+                $content
+            )
         );
 
         $formatted = sprintf(

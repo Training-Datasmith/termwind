@@ -122,7 +122,7 @@ final readonly class TableRenderer
             if ($child->isName('tr')) {
                 $rows = iterator_to_array($this->parseRow($child));
                 if (count($rows) > 0) {
-                    $this->table->addRow(new TableSeparator);
+                    $this->table->addRow(new TableSeparator());
                     $this->table->addRows($rows);
                 }
             }
@@ -170,7 +170,7 @@ final readonly class TableRenderer
                     $class .= ' strong';
                 }
 
-                $text = (string) (new HtmlRenderer)->parse(
+                $text = (string) (new HtmlRenderer())->parse(
                     trim(preg_replace('/<br\s?+\/?>/', "\n", $child->getHtml()) ?? '')
                 );
 
@@ -203,7 +203,7 @@ final readonly class TableRenderer
 
         $border = (int) $node->getAttribute('border');
         for ($i = $border; $i--; $i > 0) {
-            yield new TableSeparator;
+            yield new TableSeparator();
         }
     }
 

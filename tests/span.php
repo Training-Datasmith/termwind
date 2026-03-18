@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use function Termwind\parse;
 
 it('renders the element', function () {
@@ -9,7 +11,8 @@ it('renders the element', function () {
 });
 
 it('empty space shouldn\'t be rendered', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
 <div>
     <span class="px-1">hello</span>
     <span class="px-1">world</span>
@@ -21,7 +24,8 @@ HTML
 });
 
 it('sinlge space shouldn\'t be rendered', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
 <div>
     <span class="px-1">hello</span> <span class="px-1">world</span>
 </div>

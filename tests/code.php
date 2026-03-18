@@ -1,16 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 use function Termwind\parse;
 
 it('renders the element', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <div>
             <code start-line="11400">&lt;?php</code>
         </div>
 HTML
     );
 
-    expect($html)->toBe(<<<'HTML'
+    expect($html)->toBe(
+        <<<'HTML'
 
 <fg=gray>11400</><fg=gray>▕ </>[1m<?php[0m
 HTML
@@ -18,7 +22,8 @@ HTML
 });
 
 it('renders the element with multiline code', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <div>
             <code line="7">
 &lt;?php
@@ -37,7 +42,8 @@ function sentryReport()
 HTML
     );
 
-    expect($html)->toBe(<<<'HTML'
+    expect($html)->toBe(
+        <<<'HTML'
 
     <fg=gray>  1</><fg=gray>▕ </>[1m<?php[0m
     <fg=gray>  2</><fg=gray>▕ </>
@@ -55,7 +61,8 @@ HTML
 });
 
 it('renders the element with selected line', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
 <div>
             <code line="7">
             &lt;?php
@@ -74,7 +81,8 @@ it('renders the element with selected line', function () {
 HTML
     );
 
-    expect($html)->toBe(<<<'HTML'
+    expect($html)->toBe(
+        <<<'HTML'
 
     <fg=gray>  1</><fg=gray>▕ </>[1m<?php[0m
     <fg=gray>  2</><fg=gray>▕ </>
@@ -92,7 +100,8 @@ HTML
 });
 
 it('renders the element with selected line and started line', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
     <div>
         <code line="20" start-line="14">
             &lt;?php
@@ -111,7 +120,8 @@ it('renders the element with selected line and started line', function () {
 HTML
     );
 
-    expect($html)->toBe(<<<'HTML'
+    expect($html)->toBe(
+        <<<'HTML'
 
     <fg=gray> 14</><fg=gray>▕ </><fg=blue>[1m    [0m</>[1m<?php[0m
     <fg=gray> 15</><fg=gray>▕ </>

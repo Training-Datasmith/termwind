@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use Termwind\Exceptions\InvalidChild;
 
 use function Termwind\parse;
 
 it('accepts multiple elements', function () {
-    $dl = parse(<<<'HTML'
+    $dl = parse(
+        <<<'HTML'
         <dl>
             <dt>term</dt>
             <dd>details</dd>
@@ -24,7 +27,8 @@ it('renders only "dt" and "dd" as children', function () {
 });
 
 it('renders "dt" and "dd" elements and ignore empty spaces', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <dl>
 
             <dt>term</dt>
@@ -41,7 +45,8 @@ it('renders "dt" and "dd" elements and ignore empty spaces', function () {
 });
 
 it('renders "dt" and "dd" in a single row', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <dl> <dt>term</dt> <dd>details</dd> </dl>
     HTML
     );

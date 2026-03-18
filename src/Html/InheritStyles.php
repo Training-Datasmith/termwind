@@ -55,10 +55,11 @@ final class InheritStyles
     {
         [$totalWidth, $parentWidth] = $this->getWidthFromElements($elements);
 
-        $width = max(0, array_reduce($elements, fn(float|int $carry, \Termwind\Components\Element $element) => $carry += $element->hasStyle('flex-1') ? $element->getInnerWidth() : 0, $parentWidth - $totalWidth));
+        $width = max(0, array_reduce($elements, fn (float|int $carry, \Termwind\Components\Element $element) => $carry += $element->hasStyle('flex-1') ? $element->getInnerWidth() : 0, $parentWidth - $totalWidth));
 
         $flexed = array_values(array_filter(
-            $elements, fn (\Termwind\Components\Element $element) => $element->hasStyle('flex-1')
+            $elements,
+            fn (\Termwind\Components\Element $element) => $element->hasStyle('flex-1')
         ));
 
         foreach ($flexed as $index => &$element) {

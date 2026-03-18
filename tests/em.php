@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use function Termwind\parse;
 
 it('renders the element', function () {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Termwind\Actions\StyleToMethod;
 
 use function Termwind\parse;

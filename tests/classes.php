@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Termwind\Exceptions\ColorNotFound;
 use Termwind\Exceptions\InvalidStyle;
 

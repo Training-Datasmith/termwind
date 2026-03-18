@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Symfony\Component\Console\Output\OutputInterface;
 
 use function Termwind\parse;
@@ -7,7 +9,8 @@ use function Termwind\render;
 use function Termwind\renderUsing;
 
 it('can render complex html', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <div class="bg-white">
             <a class="ml-2">link text</a> and <a href="link">link text</a>
         </div>
@@ -24,7 +27,8 @@ it('can render strings', function () {
 });
 
 it('can render style modifier with text modifier', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <div class="bg-white underline uppercase">Hello world</div>
     HTML
     );
@@ -33,7 +37,8 @@ it('can render style modifier with text modifier', function () {
 });
 
 it('can render to custom output', function () {
-    $html = render(<<<'HTML'
+    $html = render(
+        <<<'HTML'
         <div class="bg-white">
             <a class="ml-2">link text</a><a class="ml-2" href="link">link text</a>
         </div>
@@ -50,7 +55,8 @@ it('renders element inside another one', function () {
 });
 
 it('renders element inside another one with extra spaces and line breaks', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <div class="bg-red">
             Hello <strong>world</strong> <a href="#">click here</a>
         </div>
@@ -61,7 +67,8 @@ it('renders element inside another one with extra spaces and line breaks', funct
 });
 
 it('renders element and ignores the classes of the same type', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <div class="ml-3 ml-1">Hello World</div>
     HTML
     );
@@ -70,7 +77,8 @@ it('renders element and ignores the classes of the same type', function () {
 });
 
 it('does not render comment html strings', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <div>
             <!-- This is a comment -->
             <div>Hello World</div>
@@ -82,7 +90,8 @@ it('does not render comment html strings', function () {
 });
 
 it('can inherit styles', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <div class="bg-red-300 text-white px-10">
             <span class="mr-1">Hello</span>
             <strong class="text-blue">world</strong>
@@ -94,7 +103,8 @@ it('can inherit styles', function () {
 });
 
 it('can extend colors', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <div class="my-1 ml-3 px-2 bg-green-300 text-black">
             🍃 Termwind now have the capability to <b>extend</b> colors!
         </div>
@@ -105,7 +115,8 @@ it('can extend colors', function () {
 });
 
 it('can extend with multiple childs and colors', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
          <div class="my-1 ml-3 px-2 bg-green-300 text-black">
             Termwind <span class="text-red-500"><span class="text-blue-300">now <span class="text-indigo-500">have</span> the</span> capability</span> to extend colors!
         </div>
@@ -116,7 +127,8 @@ it('can extend with multiple childs and colors', function () {
 });
 
 it('can inherit styles within multiple levels', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
         <div class="bg-red-700 px-5 my-1 mx-2">
             <div class="text-blue-300 ml-2">
                 <div>
@@ -330,7 +342,8 @@ it('allows to use custom verbosities', function () {
 it('do not display debug messages when verbosity is normal', function () {
     // default: $this->output->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
 
-    $html = render(<<<'HTML'
+    $html = render(
+        <<<'HTML'
             <div class="bg-white">
                 <a class="ml-2">link text</a><a class="ml-2" href="link">link text</a>
             </div>
@@ -344,7 +357,8 @@ it('do not display debug messages when verbosity is normal', function () {
 it('displays debug messages when verbosity is debug', function () {
     $this->output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
-    $html = render(<<<'HTML'
+    $html = render(
+        <<<'HTML'
             <div class="bg-white">
                 <a class="ml-2">link text</a><a class="ml-2" href="link">link text</a>
             </div>

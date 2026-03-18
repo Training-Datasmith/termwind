@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Termwind\Exceptions\InvalidChild;
 
 use function Termwind\parse;
@@ -22,7 +24,8 @@ it('renders "li" elements and ignore empty spaces', function () {
 });
 
 it('renders "li" elements without style in a single row', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
 <ol class="list-none"> <li>list item 1.1 test</li> <li>list item 1.2 test</li> <li>list item 1.3 test</li> </ol>
 HTML
     );
@@ -31,7 +34,8 @@ HTML
 });
 
 it('renders "li" elements without style', function () {
-    $html = parse(<<<'HTML'
+    $html = parse(
+        <<<'HTML'
 <ol class="list-none">
     <li>list item 1.1 test</li>
     <li>list item 1.2 test</li>

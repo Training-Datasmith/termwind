@@ -25,7 +25,7 @@ final class Termwind
      */
     public static function renderUsing(?OutputInterface $renderer): void
     {
-        self::$renderer = $renderer ?? new ConsoleOutput;
+        self::$renderer = $renderer ?? new ConsoleOutput();
     }
 
     /**
@@ -39,7 +39,10 @@ final class Termwind
         $content = self::prepareElements($content);
 
         return Components\Div::fromStyles(
-            self::getRenderer(), $content, $styles, $properties
+            self::getRenderer(),
+            $content,
+            $styles,
+            $properties
         );
     }
 
@@ -54,7 +57,10 @@ final class Termwind
         $content = self::prepareElements($content);
 
         return Components\Paragraph::fromStyles(
-            self::getRenderer(), $content, $styles, $properties
+            self::getRenderer(),
+            $content,
+            $styles,
+            $properties
         );
     }
 
@@ -69,7 +75,10 @@ final class Termwind
         $content = self::prepareElements($content);
 
         return Components\Span::fromStyles(
-            self::getRenderer(), $content, $styles, $properties
+            self::getRenderer(),
+            $content,
+            $styles,
+            $properties
         );
     }
 
@@ -81,7 +90,8 @@ final class Termwind
     public static function raw(array|string $content = ''): Components\Raw
     {
         return Components\Raw::fromStyles(
-            self::getRenderer(), $content
+            self::getRenderer(),
+            $content
         );
     }
 
@@ -96,7 +106,10 @@ final class Termwind
         $content = self::prepareElements($content);
 
         return Components\Anchor::fromStyles(
-            self::getRenderer(), $content, $styles, $properties
+            self::getRenderer(),
+            $content,
+            $styles,
+            $properties
         );
     }
 
@@ -109,7 +122,10 @@ final class Termwind
     public static function ul(array $content = [], string $styles = '', array $properties = []): Components\Ul
     {
         $ul = Components\Ul::fromStyles(
-            self::getRenderer(), '', $styles, $properties
+            self::getRenderer(),
+            '',
+            $styles,
+            $properties
         );
 
         $content = self::prepareElements(
@@ -145,7 +161,10 @@ final class Termwind
     public static function ol(array $content = [], string $styles = '', array $properties = []): Components\Ol
     {
         $ol = Components\Ol::fromStyles(
-            self::getRenderer(), '', $styles, $properties
+            self::getRenderer(),
+            '',
+            $styles,
+            $properties
         );
 
         $index = 0;
@@ -184,7 +203,10 @@ final class Termwind
         $content = self::prepareElements($content);
 
         return Components\Li::fromStyles(
-            self::getRenderer(), $content, $styles, $properties
+            self::getRenderer(),
+            $content,
+            $styles,
+            $properties
         );
     }
 
@@ -212,7 +234,10 @@ final class Termwind
         );
 
         return Components\Dl::fromStyles(
-            self::getRenderer(), $content, $styles, $properties
+            self::getRenderer(),
+            $content,
+            $styles,
+            $properties
         );
     }
 
@@ -227,7 +252,10 @@ final class Termwind
         $content = self::prepareElements($content);
 
         return Components\Dt::fromStyles(
-            self::getRenderer(), $content, $styles, $properties
+            self::getRenderer(),
+            $content,
+            $styles,
+            $properties
         );
     }
 
@@ -242,7 +270,10 @@ final class Termwind
         $content = self::prepareElements($content);
 
         return Components\Dd::fromStyles(
-            self::getRenderer(), $content, $styles, $properties
+            self::getRenderer(),
+            $content,
+            $styles,
+            $properties
         );
     }
 
@@ -254,7 +285,10 @@ final class Termwind
     public static function hr(string $styles = '', array $properties = []): Components\Hr
     {
         return Components\Hr::fromStyles(
-            self::getRenderer(), '', $styles, $properties
+            self::getRenderer(),
+            '',
+            $styles,
+            $properties
         );
     }
 
@@ -266,7 +300,10 @@ final class Termwind
     public static function breakLine(string $styles = '', array $properties = []): Components\BreakLine
     {
         return Components\BreakLine::fromStyles(
-            self::getRenderer(), '', $styles, $properties
+            self::getRenderer(),
+            '',
+            $styles,
+            $properties
         );
     }
 
@@ -275,7 +312,7 @@ final class Termwind
      */
     public static function getRenderer(): OutputInterface
     {
-        return self::$renderer ??= new ConsoleOutput;
+        return self::$renderer ??= new ConsoleOutput();
     }
 
     /**

@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use Symfony\Component\Console\Output\BufferedOutput;
-use Termwind\Repositories\Styles;
 
 use function Termwind\renderUsing;
 
-uses()->beforeEach(fn () => renderUsing($this->output = new BufferedOutput))
+use Termwind\Repositories\Styles;
+
+uses()->beforeEach(fn () => renderUsing($this->output = new BufferedOutput()))
     ->afterEach(function () {
         renderUsing(null);
 

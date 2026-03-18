@@ -74,7 +74,7 @@ final class CodeRenderer
         $extraSpaces = $this->findExtraSpaces($lines);
 
         if ($extraSpaces !== '') {
-            $lines = array_map(static fn(string $line): string => str_starts_with($line, $extraSpaces) ? substr($line, strlen($extraSpaces)) : $line, $lines);
+            $lines = array_map(static fn (string $line): string => str_starts_with($line, $extraSpaces) ? substr($line, strlen($extraSpaces)) : $line, $lines);
             $html = implode("\n", $lines);
         }
 
@@ -238,12 +238,14 @@ final class CodeRenderer
             $coloredLineNumber = $this->coloredLineNumber(self::LINE_NUMBER, $i, $lineLength);
 
             if ($markLine !== 0) {
-                $snippet .= ($markLine === $i + 1
+                $snippet .= (
+                    $markLine === $i + 1
                     ? $this->styleToken(self::ACTUAL_LINE_MARK, $mark)
                     : self::NO_MARK
                 );
 
-                $coloredLineNumber = ($markLine === $i + 1 ?
+                $coloredLineNumber = (
+                    $markLine === $i + 1 ?
                     $this->coloredLineNumber(self::MARKED_LINE_NUMBER, $i, $lineLength) :
                     $coloredLineNumber
                 );
@@ -263,7 +265,8 @@ final class CodeRenderer
     private function coloredLineNumber(string $token, int $lineNumber, int $length): string
     {
         return $this->styleToken(
-            $token, str_pad((string) ($lineNumber + 1), $length, ' ', STR_PAD_LEFT)
+            $token,
+            str_pad((string) ($lineNumber + 1), $length, ' ', STR_PAD_LEFT)
         );
     }
 

@@ -14,7 +14,7 @@ final readonly class Terminal
     /**
      * Creates a new terminal instance.
      */
-    public function __construct(private ?ConsoleTerminal $terminal = new ConsoleTerminal)
+    public function __construct(private ?ConsoleTerminal $terminal = new ConsoleTerminal())
     {
     }
 

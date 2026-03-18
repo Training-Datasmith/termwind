@@ -29,7 +29,7 @@ final class HtmlRenderer
      */
     public function parse(string $html): Components\Element
     {
-        $dom = new DOMDocument;
+        $dom = new DOMDocument();
 
         if (strip_tags($html) === $html) {
             return Termwind::span($html);
@@ -56,14 +56,14 @@ final class HtmlRenderer
     {
         $children = [];
         if ($node->isName('table')) {
-            return (new TableRenderer)->toElement($node);
+            return (new TableRenderer())->toElement($node);
         }
         if ($node->isName('code')) {
-            return (new CodeRenderer)->toElement($node);
+            return (new CodeRenderer())->toElement($node);
         }
 
         if ($node->isName('pre')) {
-            return (new PreRenderer)->toElement($node);
+            return (new PreRenderer())->toElement($node);
         }
 
         foreach ($node->getChildNodes() as $child) {

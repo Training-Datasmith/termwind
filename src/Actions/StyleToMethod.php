@@ -144,7 +144,7 @@ final readonly class StyleToMethod
 
         [, $size, $method] = $matches;
 
-        if ((new Terminal)->width() >= self::MEDIA_QUERY_BREAKPOINTS[$size]) {
+        if ((new Terminal())->width() >= self::MEDIA_QUERY_BREAKPOINTS[$size]) {
             return $method;
         }
 
