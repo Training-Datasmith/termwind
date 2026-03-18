@@ -55,12 +55,14 @@ final class HtmlRenderer
     private function convert(Node $node): Components\Element|string
     {
         $children = [];
-
         if ($node->isName('table')) {
             return (new TableRenderer)->toElement($node);
-        } elseif ($node->isName('code')) {
+        }
+        if ($node->isName('code')) {
             return (new CodeRenderer)->toElement($node);
-        } elseif ($node->isName('pre')) {
+        }
+
+        if ($node->isName('pre')) {
             return (new PreRenderer)->toElement($node);
         }
 
@@ -68,7 +70,7 @@ final class HtmlRenderer
             $children[] = $this->convert($child);
         }
 
-        $children = array_filter($children, fn ($child) => $child !== '');
+        $children = array_filter($children, fn (string|\Termwind\Components\Element $child): bool => $child !== '');
 
         return $this->toElement($node, $children);
     }

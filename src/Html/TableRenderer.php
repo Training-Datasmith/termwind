@@ -20,7 +20,7 @@ use Termwind\ValueObjects\Styles;
 /**
  * @internal
  */
-final class TableRenderer
+final readonly class TableRenderer
 {
     /**
      * Symfony table object uses for table generation.
@@ -46,7 +46,7 @@ final class TableRenderer
     /**
      * Converts table output to the content element.
      */
-    public function toElement(Node $node): Element
+    public function toElement(Node $node): \Termwind\Components\Div
     {
         $this->parseTable($node);
         $this->table->render();

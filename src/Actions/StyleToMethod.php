@@ -12,7 +12,7 @@ use Termwind\ValueObjects\Styles;
 /**
  * @internal
  */
-final class StyleToMethod
+final readonly class StyleToMethod
 {
     /**
      * Finds if there is any media query on the style class.
@@ -74,7 +74,7 @@ final class StyleToMethod
 
         $method = array_filter(
             (array) preg_split('/(?![^\[]*\])-/', $method),
-            fn ($item) => $item !== false
+            fn ($item): bool => $item !== false
         );
 
         $method = array_slice($method, 0, count($method) - count($arguments));
@@ -112,7 +112,7 @@ final class StyleToMethod
     {
         $keys = array_keys(self::MEDIA_QUERY_BREAKPOINTS);
 
-        usort($styles, function ($a, $b) use ($keys) {
+        usort($styles, function ($a, $b) use ($keys): int {
             $existsA = (bool) preg_match(self::MEDIA_QUERIES_REGEX, $a, $matchesA);
             $existsB = (bool) preg_match(self::MEDIA_QUERIES_REGEX, $b, $matchesB);
 

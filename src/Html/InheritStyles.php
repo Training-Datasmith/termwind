@@ -55,12 +55,10 @@ final class InheritStyles
     {
         [$totalWidth, $parentWidth] = $this->getWidthFromElements($elements);
 
-        $width = max(0, array_reduce($elements, function ($carry, $element) {
-            return $carry += $element->hasStyle('flex-1') ? $element->getInnerWidth() : 0;
-        }, $parentWidth - $totalWidth));
+        $width = max(0, array_reduce($elements, fn(float|int $carry, \Termwind\Components\Element $element) => $carry += $element->hasStyle('flex-1') ? $element->getInnerWidth() : 0, $parentWidth - $totalWidth));
 
         $flexed = array_values(array_filter(
-            $elements, fn ($element) => $element->hasStyle('flex-1')
+            $elements, fn (\Termwind\Components\Element $element) => $element->hasStyle('flex-1')
         ));
 
         foreach ($flexed as $index => &$element) {
@@ -208,9 +206,9 @@ final class InheritStyles
      * @param  array<int, Element>  $elements
      * @return int[]
      */
-    private function getWidthFromElements(array $elements)
+    private function getWidthFromElements(array $elements): array
     {
-        $totalWidth = (int) array_reduce($elements, fn ($carry, $element) => $carry += $element->getLength(), 0);
+        $totalWidth = (int) array_reduce($elements, fn ($carry, $element): array|float|int => $carry += $element->getLength(), 0);
         $parentWidth = Styles::getParentWidth($elements[0]->getProperties()['parentStyles'] ?? []);
 
         return [$totalWidth, $parentWidth];

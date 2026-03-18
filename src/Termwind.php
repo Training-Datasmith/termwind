@@ -36,7 +36,7 @@ final class Termwind
      */
     public static function div(array|string $content = '', string $styles = '', array $properties = []): Components\Div
     {
-        $content = self::prepareElements($content, $styles);
+        $content = self::prepareElements($content);
 
         return Components\Div::fromStyles(
             self::getRenderer(), $content, $styles, $properties
@@ -51,7 +51,7 @@ final class Termwind
      */
     public static function paragraph(array|string $content = '', string $styles = '', array $properties = []): Components\Paragraph
     {
-        $content = self::prepareElements($content, $styles);
+        $content = self::prepareElements($content);
 
         return Components\Paragraph::fromStyles(
             self::getRenderer(), $content, $styles, $properties
@@ -66,7 +66,7 @@ final class Termwind
      */
     public static function span(array|string $content = '', string $styles = '', array $properties = []): Components\Span
     {
-        $content = self::prepareElements($content, $styles);
+        $content = self::prepareElements($content);
 
         return Components\Span::fromStyles(
             self::getRenderer(), $content, $styles, $properties
@@ -93,7 +93,7 @@ final class Termwind
      */
     public static function anchor(array|string $content = '', string $styles = '', array $properties = []): Components\Anchor
     {
-        $content = self::prepareElements($content, $styles);
+        $content = self::prepareElements($content);
 
         return Components\Anchor::fromStyles(
             self::getRenderer(), $content, $styles, $properties
@@ -114,7 +114,6 @@ final class Termwind
 
         $content = self::prepareElements(
             $content,
-            $styles,
             static function ($li) use ($ul): string|Element {
                 if (is_string($li)) {
                     return $li;
@@ -153,7 +152,6 @@ final class Termwind
 
         $content = self::prepareElements(
             $content,
-            $styles,
             static function ($li) use ($ol, &$index): string|Element {
                 if (is_string($li)) {
                     return $li;
@@ -183,7 +181,7 @@ final class Termwind
      */
     public static function li(array|string $content = '', string $styles = '', array $properties = []): Components\Li
     {
-        $content = self::prepareElements($content, $styles);
+        $content = self::prepareElements($content);
 
         return Components\Li::fromStyles(
             self::getRenderer(), $content, $styles, $properties
@@ -200,7 +198,6 @@ final class Termwind
     {
         $content = self::prepareElements(
             $content,
-            $styles,
             static function ($element): string|Element {
                 if (is_string($element)) {
                     return $element;
@@ -227,7 +224,7 @@ final class Termwind
      */
     public static function dt(array|string $content = '', string $styles = '', array $properties = []): Components\Dt
     {
-        $content = self::prepareElements($content, $styles);
+        $content = self::prepareElements($content);
 
         return Components\Dt::fromStyles(
             self::getRenderer(), $content, $styles, $properties
@@ -242,7 +239,7 @@ final class Termwind
      */
     public static function dd(array|string $content = '', string $styles = '', array $properties = []): Components\Dd
     {
-        $content = self::prepareElements($content, $styles);
+        $content = self::prepareElements($content);
 
         return Components\Dd::fromStyles(
             self::getRenderer(), $content, $styles, $properties
@@ -287,7 +284,7 @@ final class Termwind
      * @param  array<int, string|Element>|string  $elements
      * @return array<int, string|Element>
      */
-    private static function prepareElements($elements, string $styles = '', ?Closure $callback = null): array
+    private static function prepareElements(string|array $elements, ?Closure $callback = null): array
     {
         if ($callback === null) {
             $callback = static fn ($element): string|Element => $element;

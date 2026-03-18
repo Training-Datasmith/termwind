@@ -64,7 +64,7 @@ final class CodeRenderer
     /**
      * Highlights HTML content from a given node and converts to the content element.
      */
-    public function toElement(Node $node): Element
+    public function toElement(Node $node): \Termwind\Components\Div
     {
         $line = max((int) $node->getAttribute('line'), 0);
         $startLine = max((int) $node->getAttribute('start-line'), 1);
@@ -74,9 +74,7 @@ final class CodeRenderer
         $extraSpaces = $this->findExtraSpaces($lines);
 
         if ($extraSpaces !== '') {
-            $lines = array_map(static function (string $line) use ($extraSpaces): string {
-                return str_starts_with($line, $extraSpaces) ? substr($line, strlen($extraSpaces)) : $line;
-            }, $lines);
+            $lines = array_map(static fn(string $line): string => str_starts_with($line, $extraSpaces) ? substr($line, strlen($extraSpaces)) : $line, $lines);
             $html = implode("\n", $lines);
         }
 

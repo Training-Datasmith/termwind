@@ -49,7 +49,7 @@ final class Styles
         ],
         private array $textModifiers = [],
         private array $styleModifiers = [],
-        private array $defaultStyles = []
+        private readonly array $defaultStyles = []
     ) {}
 
     /**
@@ -147,9 +147,8 @@ final class Styles
 
         if (! is_null($this->properties['options']['bold'] ?? null) ||
             ! is_null($styles->properties['options']['bold'] ?? null)) {
-            $this->properties['options']['bold'] = $this->properties['options']['bold']
-                ?? $styles->properties['options']['bold']
-                ?? false;
+            $this->properties['options']['bold'] ??= $styles->properties['options']['bold']
+            ?? false;
         }
 
         return $this;
@@ -190,7 +189,7 @@ final class Styles
      */
     final public function strong(): self
     {
-        $this->styleModifiers[__METHOD__] = static fn ($text): string => sprintf("\e[1m%s\e[0m", $text);
+        $this->styleModifiers[__METHOD__] = static fn (string $text): string => sprintf("\e[1m%s\e[0m", $text);
 
         return $this;
     }
@@ -200,7 +199,7 @@ final class Styles
      */
     final public function italic(): self
     {
-        $this->styleModifiers[__METHOD__] = static fn ($text): string => sprintf("\e[3m%s\e[0m", $text);
+        $this->styleModifiers[__METHOD__] = static fn (string $text): string => sprintf("\e[3m%s\e[0m", $text);
 
         return $this;
     }
@@ -210,7 +209,7 @@ final class Styles
      */
     final public function underline(): self
     {
-        $this->styleModifiers[__METHOD__] = static fn ($text): string => sprintf("\e[4m%s\e[0m", $text);
+        $this->styleModifiers[__METHOD__] = static fn (string $text): string => sprintf("\e[4m%s\e[0m", $text);
 
         return $this;
     }
@@ -372,13 +371,12 @@ final class Styles
     /**
      * Adds a border on top of each element.
      */
-    final public function borderT(int $width = 1): self
+    final public function borderT(): self
     {
         if (! $this->element instanceof Hr) {
             throw new InvalidStyle('`border-t` can only be used on an "hr" element.');
         }
-
-        $this->styleModifiers[__METHOD__] = function ($text, $styles): string {
+        $this->styleModifiers[__METHOD__] = function (?string $text, array $styles): string {
             $length = $this->getLength($text);
             if ($length < 1) {
                 $margins = (int) ($styles['ml'] ?? 0) + ($styles['mr'] ?? 0);
@@ -388,7 +386,6 @@ final class Styles
 
             return str_repeat('─', $length);
         };
-
         return $this;
     }
 
@@ -413,7 +410,7 @@ final class Styles
      */
     final public function truncate(int $limit = 0, string $end = '…'): self
     {
-        $this->textModifiers[__METHOD__] = function ($text, $styles) use ($limit, $end): string {
+        $this->textModifiers[__METHOD__] = function ($text, array $styles) use ($limit, $end): string {
             $width = $styles['width'] ?? 0;
 
             if (is_string($width)) {
@@ -497,7 +494,7 @@ final class Styles
      */
     final public function uppercase(): self
     {
-        $this->textModifiers[__METHOD__] = static fn ($text): string => mb_strtoupper($text, 'UTF-8');
+        $this->textModifiers[__METHOD__] = static fn ($text): string => mb_strtoupper((string) $text, 'UTF-8');
 
         return $this;
     }
@@ -507,7 +504,7 @@ final class Styles
      */
     final public function lowercase(): self
     {
-        $this->textModifiers[__METHOD__] = static fn ($text): string => mb_strtolower($text, 'UTF-8');
+        $this->textModifiers[__METHOD__] = static fn ($text): string => mb_strtolower((string) $text, 'UTF-8');
 
         return $this;
     }
@@ -517,7 +514,7 @@ final class Styles
      */
     final public function capitalize(): self
     {
-        $this->textModifiers[__METHOD__] = static fn ($text): string => mb_convert_case($text, MB_CASE_TITLE, 'UTF-8');
+        $this->textModifiers[__METHOD__] = static fn ($text): string => mb_convert_case((string) $text, MB_CASE_TITLE, 'UTF-8');
 
         return $this;
     }
@@ -528,7 +525,7 @@ final class Styles
     final public function snakecase(): self
     {
         $this->textModifiers[__METHOD__] = static fn ($text): string => mb_strtolower(
-            (string) preg_replace(['/([a-z\d])([A-Z])/', '/([^_])([A-Z][a-z])/'], '$1_$2', $text),
+            (string) preg_replace(['/([a-z\d])([A-Z])/', '/([^_])([A-Z][a-z])/'], '$1_$2', (string) $text),
             'UTF-8'
         );
 
@@ -540,7 +537,7 @@ final class Styles
      */
     final public function lineThrough(): self
     {
-        $this->styleModifiers[__METHOD__] = static fn ($text): string => sprintf("\e[9m%s\e[0m", $text);
+        $this->styleModifiers[__METHOD__] = static fn (string $text): string => sprintf("\e[9m%s\e[0m", $text);
 
         return $this;
     }
@@ -550,7 +547,7 @@ final class Styles
      */
     final public function invisible(): self
     {
-        $this->styleModifiers[__METHOD__] = static fn ($text): string => sprintf("\e[8m%s\e[0m", $text);
+        $this->styleModifiers[__METHOD__] = static fn (string $text): string => sprintf("\e[8m%s\e[0m", $text);
 
         return $this;
     }
@@ -765,7 +762,7 @@ final class Styles
 
         if ($options !== []) {
             $options = array_keys(array_filter(
-                $options, fn ($option) => $option === true
+                $options, fn ($option): bool => $option === true
             ));
             $styles[] = count($options) > 0
                 ? 'options='.implode(',', $options)
@@ -999,9 +996,8 @@ final class Styles
         }
 
         $width = (int) floor($width * $matches[1] / $matches[2]);
-        $width -= ($styles['ml'] ?? 0) + ($styles['mr'] ?? 0);
 
-        return $width;
+        return $width - (($styles['ml'] ?? 0) + ($styles['mr'] ?? 0));
     }
 
     /**
@@ -1053,7 +1049,7 @@ final class Styles
 
         // @phpstan-ignore-next-line
         foreach ($matches[0] ?? [] as [$part, $index]) {
-            $text = substr($text, 0, $index).$part.substr($text, $index, null);
+            $text = substr($text, 0, $index).$part.substr($text, $index);
         }
 
         return $text;

@@ -22,14 +22,8 @@ final class Question
      */
     private static ?StreamableInputInterface $streamableInput;
 
-    /**
-     * An instance of Symfony's question helper.
-     */
-    private SymfonyQuestionHelper $helper;
-
-    public function __construct(?SymfonyQuestionHelper $helper = null)
+    public function __construct(private readonly ?SymfonyQuestionHelper $helper = new QuestionHelper)
     {
-        $this->helper = $helper ?? new QuestionHelper;
     }
 
     /**
@@ -68,8 +62,6 @@ final class Question
         if ($output instanceof SymfonyStyle) {
             $property = (new ReflectionClass(SymfonyStyle::class))
                 ->getProperty('questionHelper');
-
-            $property->setAccessible(true);
 
             $currentHelper = $property->isInitialized($output)
                 ? $property->getValue($output)

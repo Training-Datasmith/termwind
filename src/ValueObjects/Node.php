@@ -9,7 +9,7 @@ use Generator;
 /**
  * @internal
  */
-final class Node
+final readonly class Node implements \Stringable
 {
     /**
      * A value object with helper methods for working with DOM node.
@@ -195,7 +195,7 @@ final class Node
         }
 
         if (is_null($this->getNextSibling())) {
-            $text = rtrim($text);
+            return rtrim($text);
         }
 
         return $text;

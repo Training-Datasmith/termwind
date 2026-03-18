@@ -52,7 +52,7 @@ if (! function_exists('Termwind\parse')) {
     }
 }
 
-if (! function_exists('Termwind\terminal')) {
+if (! function_exists(\Termwind\terminal::class)) {
     /**
      * Returns a Terminal instance.
      */

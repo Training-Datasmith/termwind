@@ -25,7 +25,7 @@ use Termwind\ValueObjects\Styles;
  * @method bool hasStyle(string $style)
  * @method Element addStyle(string $style)
  */
-abstract class Element
+abstract class Element implements \Stringable
 {
     /** @var string[] */
     protected static array $defaultStyles = [];
