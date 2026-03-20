@@ -1,26 +1,22 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Termwind\Components;
 
-final class BreakLine extends Element
+final class Break_Line extends Element
 {
     /**
      * Get the string representation of the element.
      */
-    public function toString(): string
+    public function to_string(): string
     {
-        $display = $this->styles->getProperties()['styles']['display'] ?? 'inline';
-
+        $display = $this->styles->get_properties()['styles']['display'] ?? 'inline';
         if ($display === 'hidden') {
             return '';
         }
-
         if ($display === 'block') {
-            return parent::toString();
+            return parent::to_string();
         }
-
-        return parent::toString()."\r";
+        return parent::to_string() . "\r";
     }
 }

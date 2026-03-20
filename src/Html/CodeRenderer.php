@@ -1,123 +1,85 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Termwind\Html;
 
 use Termwind\Components\Element;
 use Termwind\Termwind;
-use Termwind\ValueObjects\Node;
-
+use Termwind\Value_Objects\Node;
 /**
  * @internal
  */
-final class CodeRenderer
+final class Code_Renderer
 {
     public const TOKEN_DEFAULT = 'token_default';
-
     public const TOKEN_COMMENT = 'token_comment';
-
     public const TOKEN_STRING = 'token_string';
-
     public const TOKEN_HTML = 'token_html';
-
     public const TOKEN_KEYWORD = 'token_keyword';
-
     public const ACTUAL_LINE_MARK = 'actual_line_mark';
-
     public const LINE_NUMBER = 'line_number';
-
     private const ARROW_SYMBOL_UTF8 = '➜';
-
-    private const DELIMITER_UTF8 = '▕ '; // '▶';
-
+    private const DELIMITER_UTF8 = '▕ ';
+    // '▶';
     private const LINE_NUMBER_DIVIDER = 'line_divider';
-
     private const MARKED_LINE_NUMBER = 'marked_line';
-
     private const WIDTH = 3;
-
     /**
      * Holds the theme.
      *
      * @var array<string, string>
      */
-    private const THEME = [
-        self::TOKEN_STRING => 'text-gray',
-        self::TOKEN_COMMENT => 'text-gray italic',
-        self::TOKEN_KEYWORD => 'text-magenta strong',
-        self::TOKEN_DEFAULT => 'strong',
-        self::TOKEN_HTML => 'text-blue strong',
-
-        self::ACTUAL_LINE_MARK => 'text-red strong',
-        self::LINE_NUMBER => 'text-gray',
-        self::MARKED_LINE_NUMBER => 'italic strong',
-        self::LINE_NUMBER_DIVIDER => 'text-gray',
-    ];
-
+    private const THEME = [self::TOKEN_STRING => 'text-gray', self::TOKEN_COMMENT => 'text-gray italic', self::TOKEN_KEYWORD => 'text-magenta strong', self::TOKEN_DEFAULT => 'strong', self::TOKEN_HTML => 'text-blue strong', self::ACTUAL_LINE_MARK => 'text-red strong', self::LINE_NUMBER => 'text-gray', self::MARKED_LINE_NUMBER => 'italic strong', self::LINE_NUMBER_DIVIDER => 'text-gray'];
     private string $delimiter = self::DELIMITER_UTF8;
-
     private string $arrow = self::ARROW_SYMBOL_UTF8;
-
     private const NO_MARK = '    ';
-
     /**
      * Highlights HTML content from a given node and converts to the content element.
      */
-    public function toElement(Node $node): \Termwind\Components\Div
+    public function to_element(Node $node): \Termwind\Components\Div
     {
-        $line = max((int) $node->getAttribute('line'), 0);
-        $startLine = max((int) $node->getAttribute('start-line'), 1);
-
-        $html = $node->getHtml();
+        $line = max((int) $node->get_attribute('line'), 0);
+        $start_line = max((int) $node->get_attribute('start-line'), 1);
+        $html = $node->get_html();
         $lines = explode("\n", $html);
-        $extraSpaces = $this->findExtraSpaces($lines);
-
-        if ($extraSpaces !== '') {
-            $lines = array_map(static fn (string $line): string => str_starts_with($line, $extraSpaces) ? substr($line, strlen($extraSpaces)) : $line, $lines);
+        $extra_spaces = $this->find_extra_spaces($lines);
+        if ($extra_spaces !== '') {
+            $lines = array_map(static fn(string $line): string => str_starts_with($line, $extra_spaces) ? substr($line, strlen($extra_spaces)) : $line, $lines);
             $html = implode("\n", $lines);
         }
-
-        $tokenLines = $this->getHighlightedLines(trim($html, "\n"), $startLine);
-        $lines = $this->colorLines($tokenLines);
-        $lines = $this->lineNumbers($lines, $line);
-
+        $token_lines = $this->get_highlighted_lines(trim($html, "\n"), $start_line);
+        $lines = $this->color_lines($token_lines);
+        $lines = $this->line_numbers($lines, $line);
         return Termwind::div(trim($lines, "\n"));
     }
-
     /**
      * Finds extra spaces which should be removed from HTML.
      *
      * @param  array<int, string>  $lines
      */
-    private function findExtraSpaces(array $lines): string
+    private function find_extra_spaces(array $lines): string
     {
         foreach ($lines as $line) {
             if ($line === '') {
                 continue;
             }
-
             if (preg_replace('/\s+/', '', $line) === '') {
                 return $line;
             }
         }
-
         return '';
     }
-
     /**
      * Returns content split into lines with numbers.
      *
      * @return array<int, array<int, array{0: string, 1: non-empty-string}>>
      */
-    private function getHighlightedLines(string $source, int $startLine): array
+    private function get_highlighted_lines(string $source, int $start_line): array
     {
         $source = str_replace(["\r\n", "\r"], "\n", $source);
         $tokens = $this->tokenize($source);
-
-        return $this->splitToLines($tokens, $startLine - 1);
+        return $this->split_to_lines($tokens, $start_line - 1);
     }
-
     /**
      * Splits content into tokens.
      *
@@ -126,154 +88,116 @@ final class CodeRenderer
     private function tokenize(string $source): array
     {
         $tokens = token_get_all($source);
-
         $output = [];
-        $currentType = null;
-        $newType = self::TOKEN_KEYWORD;
+        $current_type = null;
+        $new_type = self::TOKEN_KEYWORD;
         $buffer = '';
-
         foreach ($tokens as $token) {
             if (is_array($token)) {
                 if ($token[0] !== T_WHITESPACE) {
-                    $newType = match ($token[0]) {
-                        T_OPEN_TAG, T_OPEN_TAG_WITH_ECHO, T_CLOSE_TAG, T_STRING, T_VARIABLE,
-                        T_DIR, T_FILE, T_METHOD_C, T_DNUMBER, T_LNUMBER, T_NS_C,
-                        T_LINE, T_CLASS_C, T_FUNC_C, T_TRAIT_C => self::TOKEN_DEFAULT,
+                    $new_type = match ($token[0]) {
+                        T_OPEN_TAG, T_OPEN_TAG_WITH_ECHO, T_CLOSE_TAG, T_STRING, T_VARIABLE, T_DIR, T_FILE, T_METHOD_C, T_DNUMBER, T_LNUMBER, T_NS_C, T_LINE, T_CLASS_C, T_FUNC_C, T_TRAIT_C => self::TOKEN_DEFAULT,
                         T_COMMENT, T_DOC_COMMENT => self::TOKEN_COMMENT,
                         T_ENCAPSED_AND_WHITESPACE, T_CONSTANT_ENCAPSED_STRING => self::TOKEN_STRING,
                         T_INLINE_HTML => self::TOKEN_HTML,
-                        default => self::TOKEN_KEYWORD
+                        default => self::TOKEN_KEYWORD,
                     };
                 }
             } else {
-                $newType = $token === '"' ? self::TOKEN_STRING : self::TOKEN_KEYWORD;
+                $new_type = $token === '"' ? self::TOKEN_STRING : self::TOKEN_KEYWORD;
             }
-
-            if ($currentType === null) {
-                $currentType = $newType;
+            if ($current_type === null) {
+                $current_type = $new_type;
             }
-
-            if ($currentType !== $newType) {
-                $output[] = [$currentType, $buffer];
+            if ($current_type !== $new_type) {
+                $output[] = [$current_type, $buffer];
                 $buffer = '';
-                $currentType = $newType;
+                $current_type = $new_type;
             }
-
             $buffer .= is_array($token) ? $token[1] : $token;
         }
-
-        $output[] = [$newType, $buffer];
-
+        $output[] = [$new_type, $buffer];
         return $output;
     }
-
     /**
      * Splits tokens into lines.
      *
      * @param  array<int, array{0: string, 1: string}>  $tokens
      * @return array<int, array<int, array{0: string, 1: non-empty-string}>>
      */
-    private function splitToLines(array $tokens, int $startLine): array
+    private function split_to_lines(array $tokens, int $start_line): array
     {
         $lines = [];
-
         $line = [];
         foreach ($tokens as $token) {
-            foreach (explode("\n", $token[1]) as $count => $tokenLine) {
+            foreach (explode("\n", $token[1]) as $count => $token_line) {
                 if ($count > 0) {
-                    $lines[$startLine++] = $line;
+                    $lines[$start_line++] = $line;
                     $line = [];
                 }
-
-                if ($tokenLine === '') {
+                if ($token_line === '') {
                     continue;
                 }
-
-                $line[] = [$token[0], $tokenLine];
+                $line[] = [$token[0], $token_line];
             }
         }
-
-        $lines[$startLine++] = $line;
-
+        $lines[$start_line++] = $line;
         return $lines;
     }
-
     /**
      * Applies colors to tokens according to a color schema.
      *
      * @param  array<int, array<int, array{0: string, 1: non-empty-string}>>  $tokenLines
      * @return array<int, string>
      */
-    private function colorLines(array $tokenLines): array
+    private function color_lines(array $token_lines): array
     {
         $lines = [];
-
-        foreach ($tokenLines as $lineCount => $tokenLine) {
+        foreach ($token_lines as $line_count => $token_line) {
             $line = '';
-            foreach ($tokenLine as $token) {
-                [$tokenType, $tokenValue] = $token;
-                $line .= $this->styleToken($tokenType, $tokenValue);
+            foreach ($token_line as $token) {
+                [$token_type, $token_value] = $token;
+                $line .= $this->style_token($token_type, $token_value);
             }
-
-            $lines[$lineCount] = $line;
+            $lines[$line_count] = $line;
         }
-
         return $lines;
     }
-
     /**
      * Prepends line numbers into lines.
      *
      * @param  array<int, string>  $lines
      */
-    private function lineNumbers(array $lines, int $markLine): string
+    private function line_numbers(array $lines, int $mark_line): string
     {
-        $lastLine = (int) array_key_last($lines);
-        $lineLength = strlen((string) ($lastLine + 1));
-        $lineLength = $lineLength < self::WIDTH ? self::WIDTH : $lineLength;
-
+        $last_line = (int) array_key_last($lines);
+        $line_length = strlen((string) ($last_line + 1));
+        $line_length = $line_length < self::WIDTH ? self::WIDTH : $line_length;
         $snippet = '';
-        $mark = '  '.$this->arrow.' ';
+        $mark = '  ' . $this->arrow . ' ';
         foreach ($lines as $i => $line) {
-            $coloredLineNumber = $this->coloredLineNumber(self::LINE_NUMBER, $i, $lineLength);
-
-            if ($markLine !== 0) {
-                $snippet .= (
-                    $markLine === $i + 1
-                    ? $this->styleToken(self::ACTUAL_LINE_MARK, $mark)
-                    : self::NO_MARK
-                );
-
-                $coloredLineNumber = (
-                    $markLine === $i + 1 ?
-                    $this->coloredLineNumber(self::MARKED_LINE_NUMBER, $i, $lineLength) :
-                    $coloredLineNumber
-                );
+            $colored_line_number = $this->colored_line_number(self::LINE_NUMBER, $i, $line_length);
+            if ($mark_line !== 0) {
+                $snippet .= $mark_line === $i + 1 ? $this->style_token(self::ACTUAL_LINE_MARK, $mark) : self::NO_MARK;
+                $colored_line_number = $mark_line === $i + 1 ? $this->colored_line_number(self::MARKED_LINE_NUMBER, $i, $line_length) : $colored_line_number;
             }
-
-            $snippet .= $coloredLineNumber;
-            $snippet .= $this->styleToken(self::LINE_NUMBER_DIVIDER, $this->delimiter);
-            $snippet .= $line.PHP_EOL;
+            $snippet .= $colored_line_number;
+            $snippet .= $this->style_token(self::LINE_NUMBER_DIVIDER, $this->delimiter);
+            $snippet .= $line . PHP_EOL;
         }
-
         return $snippet;
     }
-
     /**
      * Formats line number and applies color according to a color schema.
      */
-    private function coloredLineNumber(string $token, int $lineNumber, int $length): string
+    private function colored_line_number(string $token, int $line_number, int $length): string
     {
-        return $this->styleToken(
-            $token,
-            str_pad((string) ($lineNumber + 1), $length, ' ', STR_PAD_LEFT)
-        );
+        return $this->style_token($token, str_pad((string) ($line_number + 1), $length, ' ', STR_PAD_LEFT));
     }
-
     /**
      * Formats string and applies color according to a color schema.
      */
-    private function styleToken(string $token, string $string): string
+    private function style_token(string $token, string $string): string
     {
         return (string) Termwind::span($string, self::THEME[$token]);
     }

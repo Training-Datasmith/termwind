@@ -1,46 +1,31 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Termwind\Html;
 
 use Termwind\Components\Element;
 use Termwind\Termwind;
-use Termwind\ValueObjects\Node;
-
+use Termwind\Value_Objects\Node;
 /**
  * @internal
  */
-final class PreRenderer
+final class Pre_Renderer
 {
     /**
      * Gets HTML content from a given node and converts to the content element.
      */
-    public function toElement(Node $node): \Termwind\Components\Raw
+    public function to_element(Node $node): \Termwind\Components\Raw
     {
-        $lines = explode("\n", $node->getHtml());
+        $lines = explode("\n", $node->get_html());
         if (reset($lines) === '') {
             array_shift($lines);
         }
-
         if (end($lines) === '') {
             array_pop($lines);
         }
-
-        $maxStrLen = array_reduce(
-            $lines,
-            static fn (int $max, string $line): int => ($max < strlen($line)) ? strlen($line) : $max,
-            0
-        );
-
-        $styles = $node->getClassAttribute();
-        $html = array_map(
-            static fn (string $line): string => (string) Termwind::div(str_pad($line, $maxStrLen + 3), $styles),
-            $lines
-        );
-
-        return Termwind::raw(
-            implode('', $html)
-        );
+        $max_str_len = array_reduce($lines, static fn(int $max, string $line): int => $max < strlen($line) ? strlen($line) : $max, 0);
+        $styles = $node->get_class_attribute();
+        $html = array_map(static fn(string $line): string => (string) Termwind::div(str_pad($line, $max_str_len + 3), $styles), $lines);
+        return Termwind::raw(implode('', $html));
     }
 }

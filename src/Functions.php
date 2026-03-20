@@ -1,26 +1,23 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Termwind;
 
 use Closure;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\Output_Interface;
 use Termwind\Repositories\Styles as StyleRepository;
-use Termwind\ValueObjects\Style;
-use Termwind\ValueObjects\Styles;
-
-if (! function_exists('Termwind\renderUsing')) {
+use Termwind\Value_Objects\Style;
+use Termwind\Value_Objects\Styles;
+if (!function_exists('Termwind\renderUsing')) {
     /**
      * Sets the renderer implementation.
      */
-    function renderUsing(?OutputInterface $renderer): void
+    function render_using(?Output_Interface $renderer): void
     {
-        Termwind::renderUsing($renderer);
+        Termwind::render_using($renderer);
     }
 }
-
-if (! function_exists('Termwind\style')) {
+if (!function_exists('Termwind\style')) {
     /**
      * Creates a new style.
      *
@@ -28,31 +25,28 @@ if (! function_exists('Termwind\style')) {
      */
     function style(string $name, ?Closure $callback = null): Style
     {
-        return StyleRepository::create($name, $callback);
+        return Style_Repository::create($name, $callback);
     }
 }
-
-if (! function_exists('Termwind\render')) {
+if (!function_exists('Termwind\render')) {
     /**
      * Render HTML to the terminal.
      */
-    function render(string $html, int $options = OutputInterface::OUTPUT_NORMAL): void
+    function render(string $html, int $options = Output_Interface::OUTPUT_NORMAL): void
     {
-        (new HtmlRenderer())->render($html, $options);
+        (new Html_Renderer())->render($html, $options);
     }
 }
-
-if (! function_exists('Termwind\parse')) {
+if (!function_exists('Termwind\parse')) {
     /**
      * Parse HTML to a string that can be rendered in the terminal.
      */
     function parse(string $html): string
     {
-        return (new HtmlRenderer())->parse($html)->toString();
+        return (new Html_Renderer())->parse($html)->to_string();
     }
 }
-
-if (! function_exists(\Termwind\terminal::class)) {
+if (!function_exists(\Termwind\terminal::class)) {
     /**
      * Returns a Terminal instance.
      */
@@ -61,8 +55,7 @@ if (! function_exists(\Termwind\terminal::class)) {
         return new Terminal();
     }
 }
-
-if (! function_exists('Termwind\ask')) {
+if (!function_exists('Termwind\ask')) {
     /**
      * Renders a prompt to the user.
      *

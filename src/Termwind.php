@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Termwind;
 
 use Closure;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\Console_Output;
+use Symfony\Component\Console\Output\Output_Interface;
 use Termwind\Components\Element;
-use Termwind\Exceptions\InvalidChild;
-
+use Termwind\Exceptions\Invalid_Child;
 /**
  * @internal
  */
@@ -18,16 +16,14 @@ final class Termwind
     /**
      * The implementation of the output.
      */
-    private static ?OutputInterface $renderer;
-
+    private static ?Output_Interface $renderer;
     /**
      * Sets the renderer implementation.
      */
-    public static function renderUsing(?OutputInterface $renderer): void
+    public static function render_using(?Output_Interface $renderer): void
     {
-        self::$renderer = $renderer ?? new ConsoleOutput();
+        self::$renderer = $renderer ?? new Console_Output();
     }
-
     /**
      * Creates a div element instance.
      *
@@ -36,16 +32,9 @@ final class Termwind
      */
     public static function div(array|string $content = '', string $styles = '', array $properties = []): Components\Div
     {
-        $content = self::prepareElements($content);
-
-        return Components\Div::fromStyles(
-            self::getRenderer(),
-            $content,
-            $styles,
-            $properties
-        );
+        $content = self::prepare_elements($content);
+        return Components\Div::from_styles(self::get_renderer(), $content, $styles, $properties);
     }
-
     /**
      * Creates a paragraph element instance.
      *
@@ -54,16 +43,9 @@ final class Termwind
      */
     public static function paragraph(array|string $content = '', string $styles = '', array $properties = []): Components\Paragraph
     {
-        $content = self::prepareElements($content);
-
-        return Components\Paragraph::fromStyles(
-            self::getRenderer(),
-            $content,
-            $styles,
-            $properties
-        );
+        $content = self::prepare_elements($content);
+        return Components\Paragraph::from_styles(self::get_renderer(), $content, $styles, $properties);
     }
-
     /**
      * Creates a span element instance with the given style.
      *
@@ -72,16 +54,9 @@ final class Termwind
      */
     public static function span(array|string $content = '', string $styles = '', array $properties = []): Components\Span
     {
-        $content = self::prepareElements($content);
-
-        return Components\Span::fromStyles(
-            self::getRenderer(),
-            $content,
-            $styles,
-            $properties
-        );
+        $content = self::prepare_elements($content);
+        return Components\Span::from_styles(self::get_renderer(), $content, $styles, $properties);
     }
-
     /**
      * Creates an element instance with raw content.
      *
@@ -89,12 +64,8 @@ final class Termwind
      */
     public static function raw(array|string $content = ''): Components\Raw
     {
-        return Components\Raw::fromStyles(
-            self::getRenderer(),
-            $content
-        );
+        return Components\Raw::from_styles(self::get_renderer(), $content);
     }
-
     /**
      * Creates an anchor element instance with the given style.
      *
@@ -103,16 +74,9 @@ final class Termwind
      */
     public static function anchor(array|string $content = '', string $styles = '', array $properties = []): Components\Anchor
     {
-        $content = self::prepareElements($content);
-
-        return Components\Anchor::fromStyles(
-            self::getRenderer(),
-            $content,
-            $styles,
-            $properties
-        );
+        $content = self::prepare_elements($content);
+        return Components\Anchor::from_styles(self::get_renderer(), $content, $styles, $properties);
     }
-
     /**
      * Creates an unordered list instance.
      *
@@ -121,37 +85,24 @@ final class Termwind
      */
     public static function ul(array $content = [], string $styles = '', array $properties = []): Components\Ul
     {
-        $ul = Components\Ul::fromStyles(
-            self::getRenderer(),
-            '',
-            $styles,
-            $properties
-        );
-
-        $content = self::prepareElements(
-            $content,
-            static function ($li) use ($ul): string|Element {
-                if (is_string($li)) {
-                    return $li;
-                }
-
-                if (! $li instanceof Components\Li) {
-                    throw new InvalidChild('Unordered lists only accept `li` as child');
-                }
-
-                return match (true) {
-                    $li->hasStyle('list-none') => $li,
-                    $ul->hasStyle('list-none') => $li->addStyle('list-none'),
-                    $ul->hasStyle('list-square') => $li->addStyle('list-square'),
-                    $ul->hasStyle('list-disc') => $li->addStyle('list-disc'),
-                    default => $li->addStyle('list-none'),
-                };
+        $ul = Components\Ul::from_styles(self::get_renderer(), '', $styles, $properties);
+        $content = self::prepare_elements($content, static function ($li) use ($ul): string|Element {
+            if (is_string($li)) {
+                return $li;
             }
-        );
-
-        return $ul->setContent($content);
+            if (!$li instanceof Components\Li) {
+                throw new Invalid_Child('Unordered lists only accept `li` as child');
+            }
+            return match (true) {
+                $li->has_style('list-none') => $li,
+                $ul->has_style('list-none') => $li->add_style('list-none'),
+                $ul->has_style('list-square') => $li->add_style('list-square'),
+                $ul->has_style('list-disc') => $li->add_style('list-disc'),
+                default => $li->add_style('list-none'),
+            };
+        });
+        return $ul->set_content($content);
     }
-
     /**
      * Creates an ordered list instance.
      *
@@ -160,38 +111,24 @@ final class Termwind
      */
     public static function ol(array $content = [], string $styles = '', array $properties = []): Components\Ol
     {
-        $ol = Components\Ol::fromStyles(
-            self::getRenderer(),
-            '',
-            $styles,
-            $properties
-        );
-
+        $ol = Components\Ol::from_styles(self::get_renderer(), '', $styles, $properties);
         $index = 0;
-
-        $content = self::prepareElements(
-            $content,
-            static function ($li) use ($ol, &$index): string|Element {
-                if (is_string($li)) {
-                    return $li;
-                }
-
-                if (! $li instanceof Components\Li) {
-                    throw new InvalidChild('Ordered lists only accept `li` as child');
-                }
-
-                return match (true) {
-                    $li->hasStyle('list-none') => $li->addStyle('list-none'),
-                    $ol->hasStyle('list-none') => $li->addStyle('list-none'),
-                    $ol->hasStyle('list-decimal') => $li->addStyle('list-decimal-'.(++$index)),
-                    default => $li->addStyle('list-none'),
-                };
+        $content = self::prepare_elements($content, static function ($li) use ($ol, &$index): string|Element {
+            if (is_string($li)) {
+                return $li;
             }
-        );
-
-        return $ol->setContent($content);
+            if (!$li instanceof Components\Li) {
+                throw new Invalid_Child('Ordered lists only accept `li` as child');
+            }
+            return match (true) {
+                $li->has_style('list-none') => $li->add_style('list-none'),
+                $ol->has_style('list-none') => $li->add_style('list-none'),
+                $ol->has_style('list-decimal') => $li->add_style('list-decimal-' . ++$index),
+                default => $li->add_style('list-none'),
+            };
+        });
+        return $ol->set_content($content);
     }
-
     /**
      * Creates a list item instance.
      *
@@ -200,16 +137,9 @@ final class Termwind
      */
     public static function li(array|string $content = '', string $styles = '', array $properties = []): Components\Li
     {
-        $content = self::prepareElements($content);
-
-        return Components\Li::fromStyles(
-            self::getRenderer(),
-            $content,
-            $styles,
-            $properties
-        );
+        $content = self::prepare_elements($content);
+        return Components\Li::from_styles(self::get_renderer(), $content, $styles, $properties);
     }
-
     /**
      * Creates a description list instance.
      *
@@ -218,29 +148,17 @@ final class Termwind
      */
     public static function dl(array $content = [], string $styles = '', array $properties = []): Components\Dl
     {
-        $content = self::prepareElements(
-            $content,
-            static function ($element): string|Element {
-                if (is_string($element)) {
-                    return $element;
-                }
-
-                if (! $element instanceof Components\Dt && ! $element instanceof Components\Dd) {
-                    throw new InvalidChild('Description lists only accept `dt` and `dd` as children');
-                }
-
+        $content = self::prepare_elements($content, static function ($element): string|Element {
+            if (is_string($element)) {
                 return $element;
             }
-        );
-
-        return Components\Dl::fromStyles(
-            self::getRenderer(),
-            $content,
-            $styles,
-            $properties
-        );
+            if (!$element instanceof Components\Dt && !$element instanceof Components\Dd) {
+                throw new Invalid_Child('Description lists only accept `dt` and `dd` as children');
+            }
+            return $element;
+        });
+        return Components\Dl::from_styles(self::get_renderer(), $content, $styles, $properties);
     }
-
     /**
      * Creates a description term instance.
      *
@@ -249,16 +167,9 @@ final class Termwind
      */
     public static function dt(array|string $content = '', string $styles = '', array $properties = []): Components\Dt
     {
-        $content = self::prepareElements($content);
-
-        return Components\Dt::fromStyles(
-            self::getRenderer(),
-            $content,
-            $styles,
-            $properties
-        );
+        $content = self::prepare_elements($content);
+        return Components\Dt::from_styles(self::get_renderer(), $content, $styles, $properties);
     }
-
     /**
      * Creates a description details instance.
      *
@@ -267,16 +178,9 @@ final class Termwind
      */
     public static function dd(array|string $content = '', string $styles = '', array $properties = []): Components\Dd
     {
-        $content = self::prepareElements($content);
-
-        return Components\Dd::fromStyles(
-            self::getRenderer(),
-            $content,
-            $styles,
-            $properties
-        );
+        $content = self::prepare_elements($content);
+        return Components\Dd::from_styles(self::get_renderer(), $content, $styles, $properties);
     }
-
     /**
      * Creates a horizontal rule instance.
      *
@@ -284,51 +188,36 @@ final class Termwind
      */
     public static function hr(string $styles = '', array $properties = []): Components\Hr
     {
-        return Components\Hr::fromStyles(
-            self::getRenderer(),
-            '',
-            $styles,
-            $properties
-        );
+        return Components\Hr::from_styles(self::get_renderer(), '', $styles, $properties);
     }
-
     /**
      * Creates an break line element instance.
      *
      * @param  array<string, mixed>  $properties
      */
-    public static function breakLine(string $styles = '', array $properties = []): Components\BreakLine
+    public static function break_line(string $styles = '', array $properties = []): Components\Break_Line
     {
-        return Components\BreakLine::fromStyles(
-            self::getRenderer(),
-            '',
-            $styles,
-            $properties
-        );
+        return Components\Break_Line::from_styles(self::get_renderer(), '', $styles, $properties);
     }
-
     /**
      * Gets the current renderer instance.
      */
-    public static function getRenderer(): OutputInterface
+    public static function get_renderer(): Output_Interface
     {
-        return self::$renderer ??= new ConsoleOutput();
+        return self::$renderer ??= new Console_Output();
     }
-
     /**
      * Convert child elements to a string.
      *
      * @param  array<int, string|Element>|string  $elements
      * @return array<int, string|Element>
      */
-    private static function prepareElements(string|array $elements, ?Closure $callback = null): array
+    private static function prepare_elements(string|array $elements, ?Closure $callback = null): array
     {
         if ($callback === null) {
-            $callback = static fn ($element): string|Element => $element;
+            $callback = static fn($element): string|Element => $element;
         }
-
         $elements = is_array($elements) ? $elements : [$elements];
-
         return array_map($callback, $elements);
     }
 }
